@@ -5,11 +5,11 @@
       <div class="col-lg-3 col-md-6 col-sm-6">
         <div class="footer__about">
           <div class="footer__about__logo">
-            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+            <a href="/"><img src=<?= base_url("modules/img/logo.png") ?> width="120" alt="Logo"></a>
           </div>
           <ul>
             <li>Address: Jl. Ki Uju, Serang, Kec. Serang, Kota Serang, Banten</li>
-            <li>Phone: +65 8515 6066 785</li>
+            <li>Phone: +65 8515.6066.785</li>
             <li>Email: admin@mike.com</li>
           </ul>
         </div>
@@ -47,7 +47,6 @@
             <a href="#"><i class="fa fa-facebook"></i></a>
             <a href="#"><i class="fa fa-instagram"></i></a>
             <a href="#"><i class="fa fa-twitter"></i></a>
-            <a href="#"><i class="fa fa-pinterest"></i></a>
           </div>
         </div>
       </div>
@@ -60,7 +59,7 @@
               <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
               Copyright &copy;<script>
                 document.write(new Date().getFullYear());
-              </script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+              </script> All rights reserved | Made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">1st Group</a>
               <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
             </p>
           </div>

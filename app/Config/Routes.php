@@ -2,6 +2,8 @@
 
 namespace Config;
 
+use App\Models\CategoryModel;
+
 // Create a new instance of our RouteCollection class.
 $routes = Services::routes();
 
@@ -20,7 +22,12 @@ $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('HomeController');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
-$routes->set404Override();
+$routes->set404Override(function () {
+    $categories = new CategoryModel();
+    $data["title"] = "Page Not Found";
+    $data["categories"] = $categories->getAll();
+    return view("404", $data);
+});
 // The Auto Routing (Legacy) is very dangerous. It is easy to create vulnerable apps
 // where controller filters or CSRF protection are bypassed.
 // If you don't want to define all routes, please use the Auto Routing (Improved).
@@ -35,7 +42,23 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'HomeController::index');
+
+// Home
+$routes->get("/", "HomeController::index");
+
+// Users
+// --- Authentication ---
+$routes->get("/login", "UserController::login");
+$routes->get("/register", "UserController::register");
+$routes->get("/logout", "UserController::logout");
+$routes->post("/login", "UserController::loginProcess");
+$routes->post("/register", "UserController::registerProcess");
+
+// --- Profile ---
+$routes->get("/profile", "UserController::profile", ["filter" => "authFilter"]);
+$routes->post("/profile", "UserController::updateProfile", ["filter" => "authFilter"]);
+$routes->post("/profile/changepassword", "UserController::changePassword", ["filter" => "authFilter"]);
+
 
 /*
  * --------------------------------------------------------------------

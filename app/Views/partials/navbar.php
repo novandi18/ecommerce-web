@@ -2,7 +2,7 @@
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
   <div class="humberger__menu__logo">
-    <a href="#"><img src=<?= base_url("modules/img/logo.png") ?> alt=""></a>
+    <a href="#"><img src=<?= base_url("modules/img/logo.png") ?> alt="" width="120"></a>
   </div>
   <div class="humberger__menu__cart">
     <ul>
@@ -18,18 +18,16 @@
   </div>
   <nav class="humberger__menu__nav mobile-menu">
     <ul>
-      <li class="active"><a href="./index.html">Home</a></li>
-      <li><a href="./shop-grid.html">Shop</a></li>
-      <li><a href="#">Pages</a>
+      <li class="active"><a href="/">Home</a></li>
+      <li><a href="/shop">Shop</a></li>
+      <li><a href="#">Shoes</a>
         <ul class="header__menu__dropdown">
-          <li><a href="./shop-details.html">Shop Details</a></li>
-          <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-          <li><a href="./checkout.html">Check Out</a></li>
-          <li><a href="./blog-details.html">Blog Details</a></li>
+          <?php foreach ($categories as $category) : ?>
+            <li><a href="/shop/<?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($category->category_name))) ?>"><?= $category->category_name ?></a></li>
+          <?php endforeach; ?>
         </ul>
       </li>
-      <li><a href="./blog.html">Blog</a></li>
-      <li><a href="./contact.html">Contact</a></li>
+      <li><a href="/contact">Contact</a></li>
     </ul>
   </nav>
   <div id="mobile-menu-wrap"></div>
@@ -41,8 +39,7 @@
   </div>
   <div class="humberger__menu__contact">
     <ul>
-      <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-      <li>Free Shipping for all Order of $99</li>
+      <li><i class="fa fa-envelope"></i> admin@mike.com</li>
     </ul>
   </div>
 </div>
@@ -56,22 +53,32 @@
         <div class="col-lg-6 col-md-6">
           <div class="header__top__left">
             <ul>
-              <li><i class="fa fa-envelope"></i> hello@colorlib.com</li>
-              <li>Free Shipping for all Order of $99</li>
+              <li><i class="fa fa-envelope"></i> admin@mike.com</li>
             </ul>
           </div>
         </div>
         <div class="col-lg-6 col-md-6">
           <div class="header__top__right">
-            <div class="header__top__right__social">
+            <div class="header__top__right__social pr-3">
               <a href="#"><i class="fa fa-facebook"></i></a>
               <a href="#"><i class="fa fa-twitter"></i></a>
               <a href="#"><i class="fa fa-linkedin"></i></a>
-              <a href="#"><i class="fa fa-pinterest-p"></i></a>
             </div>
-            <div class="header__top__right__auth">
-              <a href="#"><i class="fa fa-user"></i> Login</a>
-            </div>
+            <?php if (session()->get("name")) : ?>
+              <div class="header__top__right__auth border-left pl-3">
+                <a href="/profile"><i class="fa fa-user"></i> <?= session()->get("name") ?></a>
+              </div>
+              <div class="header__top__right__auth ml-2">
+                <a href="<?= base_url('/logout') ?>" class="bg-danger text-white px-2 rounded">Logout</a>
+              </div>
+            <?php else : ?>
+              <div class="header__top__right__auth border-right border-left px-3">
+                <a href="/login"><i class="fa fa-user"></i> Login</a>
+              </div>
+              <div class="header__top__right__auth ml-2 pl-1">
+                <a href="/register"><i class="fa fa-user"></i> Register</a>
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -79,38 +86,37 @@
   </div>
   <div class="container">
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-3 d-flex align-items-center">
         <div class="header__logo">
-          <a href="./index.html"><img src=<?= base_url("modules/img/logo.png") ?> alt=""></a>
+          <a href="./"><img src=<?= base_url("modules/img/logo.png") ?> alt="" width="120"></a>
         </div>
       </div>
       <div class="col-lg-6">
         <nav class="header__menu">
           <ul>
-            <li class="active"><a href="./index.html">Home</a></li>
-            <li><a href="./shop-grid.html">Shop</a></li>
-            <li><a href="#">Pages</a>
+            <li class="active"><a href="./">Home</a></li>
+            <li><a href="/shop">Shop</a></li>
+            <li><a href="#">Shoes</a>
               <ul class="header__menu__dropdown">
-                <li><a href="./shop-details.html">Shop Details</a></li>
-                <li><a href="./shoping-cart.html">Shoping Cart</a></li>
-                <li><a href="./checkout.html">Check Out</a></li>
-                <li><a href="./blog-details.html">Blog Details</a></li>
+                <?php foreach ($categories as $category) : ?>
+                  <li><a href="/shop/<?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($category->category_name))) ?>"><?= $category->category_name ?></a></li>
+                <?php endforeach; ?>
               </ul>
             </li>
-            <li><a href="./blog.html">Blog</a></li>
-            <li><a href="./contact.html">Contact</a></li>
+            <li><a href="/about">About us</a></li>
           </ul>
         </nav>
       </div>
-      <div class="col-lg-3">
-        <div class="header__cart">
-          <ul>
-            <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-            <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-          </ul>
-          <div class="header__cart__price">item: <span>$150.00</span></div>
+      <?php if (session()->get("id")) : ?>
+        <div class="col-lg-3">
+          <div class="header__cart">
+            <ul>
+              <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+            </ul>
+            <div class="header__cart__price">item: <span>$150.00</span></div>
+          </div>
         </div>
-      </div>
+      <?php endif; ?>
     </div>
     <div class="humberger__open">
       <i class="fa fa-bars"></i>
