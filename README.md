@@ -4,3 +4,9 @@ Member of 1st Group
 2. Faisal Khoiri Muzakki
 3. Mohamad Rizky Rhamadhan
 4. Muhammad Husnan Maulana
+
+# Features
+- User Homepage :white_check_mark:
+- User Authentication :white_check_mark:
+- Middleware :white_check_mark:
+- User Profile :white_check_mark:
