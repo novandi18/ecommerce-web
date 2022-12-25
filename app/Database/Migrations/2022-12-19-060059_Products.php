@@ -28,6 +28,10 @@ class Products extends Migration
                 "type" => "VARCHAR",
                 "constraint" => 128
             ],
+            "sold" => [
+                "type" => "INT",
+                "constraint" => 128
+            ],
             "category_id" => [
                 "type" => "INT",
                 "constraint" => 11,

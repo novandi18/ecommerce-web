@@ -59,6 +59,12 @@ $routes->get("/profile", "UserController::profile", ["filter" => "authFilter"]);
 $routes->post("/profile", "UserController::updateProfile", ["filter" => "authFilter"]);
 $routes->post("/profile/changepassword", "UserController::changePassword", ["filter" => "authFilter"]);
 
+// --- Shop ---
+$routes->get("/shop", "ProductController::shop");
+$routes->get("/shop/search", "ProductController::productSearch");
+$routes->get("/shop/(:any)/(:any)", "ProductController::productDetail/$1/$2");
+$routes->get("/shop/(:any)", "ProductController::shop/$1");
+$routes->post("/shop/search", "ProductController::productSearchProcess");
 
 /*
  * --------------------------------------------------------------------

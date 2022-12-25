@@ -48,10 +48,25 @@ class ProductModel extends Model
     }
 
     // Get all products
-    public function getAll()
+    public function getAllWithPagination($perPage, $category)
     {
-        $q = $this->db->query("SELECT * FROM " . $this->table);
-        return $q->getResult();
+        $page = @$_GET["page"] ? $_GET["page"] : 1; // Page
+        $search = @$_GET["search_query"] ? $_GET["search_query"] : ""; // Search
+        $offset = ($page - 1) * $perPage; // Offset
+        $wCategory = $category !== "all" ? explode("-", $category) : [""]; // Category
+        $min = @$_GET["min"] ? $_GET["min"] : 0; // Min. Price
+        $max = @$_GET["max"] ? $_GET["max"] : 5000000; // Max. Price
+        $sortby = @$_GET["sort"] && $_GET["sort"] !== "relevance" ? $_GET["sort"] : ""; // Sort by
+        $price = @$_GET["price"] && $_GET["price"] !== "all" ? $_GET["price"] : ""; // Sort price
+
+        $sortingPrice = $price != "" ? ($price == "low-high" ? "p.price ASC" : "p.price DESC") : "";
+        $sortingSortby = $sortby != "" ? ($sortby == "latest" ? ($price == "" ? "" : ", ") . "p.id_product DESC" : ($price == "" ? "" : ", ") . "p.sold DESC") : "";
+
+        $data = $this->db->query("SELECT p.id_product as id_product, p.product_name as product, p.price as price, p.photo as photo, c.category_name as category FROM " . $this->table . " p JOIN categories c ON c.id_category = p.category_id WHERE p.product_name LIKE '%" . $search . "%' AND c.category_name LIKE '%" . $wCategory[count($wCategory) - 1] . "' AND p.price >= $min AND p.price <= $max " . ($sortby == "" && $price == "" ? "" : "ORDER BY") . " " . $sortingPrice . $sortingSortby . " LIMIT $perPage OFFSET $offset")->getResult();
+
+        $total = count($this->db->query("SELECT p.id_product FROM " . $this->table . " p JOIN categories c ON c.id_category = p.category_id WHERE p.product_name LIKE '%" . $search . "%' AND c.category_name LIKE '%" . $wCategory[count($wCategory) - 1] . "' AND p.price >= $min AND p.price <= $max " . ($sortby == "" && $price == "" ? "" : "ORDER BY") . " " . $sortingPrice . $sortingSortby . "")->getResult());
+
+        return ["result" => $data, "page" => $page, "perPage" => $perPage, "total" => $total];
     }
 
     // Get products per category

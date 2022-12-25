@@ -88,7 +88,7 @@
     <div class="row">
       <div class="col-lg-3 d-flex align-items-center">
         <div class="header__logo">
-          <a href="./"><img src=<?= base_url("modules/img/logo.png") ?> alt="" width="120"></a>
+          <a href="/"><img src=<?= base_url("modules/img/logo.png") ?> alt="" width="120"></a>
         </div>
       </div>
       <div class="col-lg-6">

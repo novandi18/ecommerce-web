@@ -20,6 +20,7 @@ class ProductSeeder extends Seeder
                     "description"   => $faker->text(),
                     "price"         => $faker->numberBetween(999000, 2000000),
                     "photo"         => $data[2] . ".png",
+                    "sold"          => 0,
                     "category_id"   => $data[1],
                     "created_at"    => Time::createFromTimestamp($faker->unixTime()),
                     "updated_at"    => Time::now()
