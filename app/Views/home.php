@@ -52,9 +52,6 @@
         <div class="col-lg-3 col-md-4 col-sm-6 mix <?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($f->category_name))) ?>">
           <div class="featured__item">
             <div class="featured__item__pic set-bg" data-setbg=<?= base_url("modules/img/gallery/" . preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($f->category_name))) . "/" . $f->photo) ?>>
-              <ul class="featured__item__pic__hover">
-                <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-              </ul>
             </div>
             <div class="featured__item__text">
               <h6><a href="/shop/<?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($f->category_name))) . "/" . strtolower(str_replace(' ', '-', $f->product_name)) ?>"><?= $f->product_name ?></a></h6>

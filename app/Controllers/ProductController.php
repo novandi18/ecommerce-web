@@ -3,14 +3,14 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\CartModel;
 use App\Models\CategoryModel;
 use App\Models\ProductColorModel;
 use App\Models\ProductModel;
-use CodeIgniter\HTTP\URI;
 
 class ProductController extends BaseController
 {
-    protected $db, $pager, $categories, $products, $colors;
+    protected $db, $pager, $categories, $products, $colors, $carts;
 
     public function __construct()
     {
@@ -19,6 +19,7 @@ class ProductController extends BaseController
         $this->categories = new CategoryModel();
         $this->products = new ProductModel();
         $this->colors = new ProductColorModel();
+        $this->carts = new CartModel();
     }
 
     public function shop($category = "all")
@@ -31,6 +32,7 @@ class ProductController extends BaseController
         $data["links"] = $this->pager->makeLinks($product["page"], $product["perPage"], $product["total"], "bootstrap_pagination");
         $data["total_products"] = $product["total"];
         $data["active"] = $category;
+        $data["cart"] = $this->carts->getTotalItem();
         return view("shop", $data);
     }
 
@@ -45,6 +47,7 @@ class ProductController extends BaseController
             $data["links"] = $this->pager->makeLinks($product["page"], $product["perPage"], $product["total"], "bootstrap_pagination");
             $data["total_products"] = $product["total"];
             $data["active"] = $_GET["category"];
+            $data["cart"] = $this->carts->getTotalItem();
             return view("shop", $data);
         } else {
             return redirect()->to("/shop");
@@ -62,6 +65,18 @@ class ProductController extends BaseController
 
     public function productDetail($category, $productName)
     {
-        echo $productName;
+        $product = $this->products->getProduct($productName, $category);
+        $data["title"] = $product["product"][0]->product_name;
+        $data["category"] = $category;
+        $data["categories"] = $this->categories->getAll();
+        $data["product"] = $product["product"];
+        $data["sizecolor"] = $product["sizeColor"];
+        $data["related"] = $product["related"];
+        $data["cart"] = $this->carts->getTotalItem();
+        return view("product", $data);
+    }
+
+    public function addToCart()
+    {
     }
 }

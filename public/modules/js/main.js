@@ -219,6 +219,12 @@
             }
         }
         $button.parent().find('input').val(newVal);
+        let data = $button.parent().find('input').attr("data-qty")
+        document.getElementById(`checkout-${data}`).value = newVal;
     });
 
 })(jQuery);
+
+function selectColor(color) {
+    document.getElementById(`tabs-color-${color}`).checked = true
+}
