@@ -116,11 +116,7 @@
             <?php foreach ($products as $product) : ?>
               <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="product__item">
-                  <div class="product__item__pic set-bg" data-setbg=<?= base_url("modules/img/gallery/" . preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($product->category))) . "/" . $product->photo) ?>>
-                    <ul class="product__item__pic__hover">
-                      <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                    </ul>
-                  </div>
+                  <div class="product__item__pic set-bg" data-setbg=<?= base_url("modules/img/gallery/" . preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($product->category))) . "/" . $product->photo) ?>></div>
                   <div class="product__item__text">
                     <span style="font-size: .8em;" class="text-secondary"><?= $product->category ?></span>
                     <h6><a href="/shop/<?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($product->category))) . "/" . str_replace(' ', '-', strtolower($product->product)) ?>"><?= $product->product ?></a></h6>

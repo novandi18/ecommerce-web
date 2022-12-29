@@ -66,6 +66,15 @@ $routes->get("/shop/(:any)/(:any)", "ProductController::productDetail/$1/$2");
 $routes->get("/shop/(:any)", "ProductController::shop/$1");
 $routes->post("/shop/search", "ProductController::productSearchProcess");
 
+// --- Cart ---
+$routes->get("/cart", "CartController::cart", ["filter" => "authFilter"]);
+$routes->get("/cart/delete/(:num)", "CartController::deleteFromCart/$1", ["filter" => "authFilter"]);
+$routes->post("/cart/add", "CartController::addToCart", ["filter" => "authFilter"]);
+$routes->post("/cart/checkout", "CartController::cartToCheckout", ["filter" => "authFilter"]);
+
+// --- Checkout ---
+$routes->get("/checkout", "TransactionController::checkout", ["filter" => "authFilter"]);
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

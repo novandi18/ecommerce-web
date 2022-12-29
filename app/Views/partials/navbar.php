@@ -88,15 +88,16 @@
     <div class="row">
       <div class="col-lg-3 d-flex align-items-center">
         <div class="header__logo">
-          <a href="/"><img src=<?= base_url("modules/img/logo.png") ?> alt="" width="120"></a>
+          <a href="/"><img src=<?= base_url("modules/img/logo.png") ?> alt="Logo" width="120"></a>
         </div>
       </div>
       <div class="col-lg-6">
         <nav class="header__menu">
           <ul>
-            <li class="active"><a href="./">Home</a></li>
-            <li><a href="/shop">Shop</a></li>
-            <li><a href="#">Shoes</a>
+            <?php $menuUrl = explode("/", str_replace('/index.php', '', $_SERVER["PHP_SELF"])); ?>
+            <li class="<?= count($menuUrl) <= 1 && $menuUrl[0] == '' ? 'active' : '' ?>"><a href="/">Home</a></li>
+            <li class="<?= count($menuUrl) === 2 && $menuUrl[1] == 'shop' ? 'active' : '' ?>"><a href="/shop">Shop</a></li>
+            <li class="<?= count($menuUrl) >= 3 && $menuUrl[1] == 'shop' ? 'active' : '' ?>"><a href="#">Shoes</a>
               <ul class="header__menu__dropdown">
                 <?php foreach ($categories as $category) : ?>
                   <li><a href="/shop/<?= preg_replace('/[^a-z]/i', '-', str_replace(' ', '', strtolower($category->category_name))) ?>"><?= $category->category_name ?></a></li>
@@ -107,13 +108,13 @@
           </ul>
         </nav>
       </div>
-      <?php if (session()->get("id")) : ?>
+      <?php if (@session()->id) : ?>
         <div class="col-lg-3">
           <div class="header__cart">
             <ul>
-              <li><a href="/cart"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
+              <li><a href="/cart" target="_blank"><i class="fa fa-shopping-bag"></i> <span><?= $cart["qty"] ?></span></a></li>
             </ul>
-            <div class="header__cart__price">item: <span>$150.00</span></div>
+            <div class="header__cart__price">item: <span><?= "Rp " . number_format($cart["total"] === NULL ? 0 : $cart["total"], 0, "", ".") ?></span></div>
           </div>
         </div>
       <?php endif; ?>

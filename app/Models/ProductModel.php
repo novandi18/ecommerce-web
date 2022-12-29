@@ -69,6 +69,26 @@ class ProductModel extends Model
         return ["result" => $data, "page" => $page, "perPage" => $perPage, "total" => $total];
     }
 
+    // Get single product by name
+    public function getProduct($name, $category)
+    {
+        $productName = str_replace("-", " ", $name);
+        $categoryName = explode("-", $category);
+
+        // Product
+        $product = $this->db->query("SELECT p.id_product as id_product, p.product_name as product_name, p.description as description, p.price as price, p.photo as photo, p.sold as sold, c.category_name as category FROM `products` p JOIN categories c ON c.id_category = p.category_id WHERE p.product_name LIKE '%" . $productName . "%' AND c.category_name LIKE '%" . $categoryName[count($categoryName) - 1] . "'")->getResult();
+
+        // Id product
+        $id = $product[0]->id_product;
+        // Size and Color
+        $sizeColor = $this->db->query("SELECT ps.size35 as size35, ps.size36 as size36, ps.size37 as size37, ps.size38 as size38, ps.size39 as size39, ps.size40 as size40, ps.size41 as size41, ps.size42 as size42, pc.id_product_color as id, pc.color as color FROM product_sizes ps JOIN product_colors pc ON pc.id_product_color = ps.color_id WHERE ps.product_id = '$id'")->getResult();
+
+        // Related Products
+        $related = $this->db->query("SELECT p.product_name as product_name, p.price as price, p.photo as photo FROM products p JOIN categories c ON c.id_category = p.category_id WHERE c.category_name LIKE '%" . $categoryName[count($categoryName) - 1] . "' AND p.id_product != '$id' ORDER BY RAND() LIMIT 4")->getResult();
+
+        return ["product" => $product, "sizeColor" => $sizeColor, "related" => $related];
+    }
+
     // Get products per category
     public function getProductsPerCategory()
     {

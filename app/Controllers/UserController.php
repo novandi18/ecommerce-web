@@ -3,18 +3,20 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\CartModel;
 use App\Models\CategoryModel;
 use App\Models\UserModel;
 
 class UserController extends BaseController
 {
-    protected $db, $users, $categories;
+    protected $db, $users, $categories, $carts;
 
     public function __construct()
     {
         $this->db = db_connect();
         $this->users = new UserModel();
         $this->categories = new CategoryModel();
+        $this->carts = new CartModel();
         helper(["form", "url"]);
     }
 
@@ -135,6 +137,7 @@ class UserController extends BaseController
         $data["title"] = "Profile";
         $data["categories"] = $this->categories->getAll();
         $data["profile"] = $this->users->getUserProfile();
+        $data["cart"] = $this->carts->getTotalItem();
         return view("profile", $data);
     }
 

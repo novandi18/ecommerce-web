@@ -17,11 +17,19 @@ class Transactions extends Migration
                 "type" => "INT",
                 "constraint" => 100
             ],
+            "size" => [
+                "type" => "INT",
+                "constraint" => 42,
+            ],
             "user_id" => [
                 "type" => "INT",
                 "constraint" => 11,
             ],
             "product_id" => [
+                "type" => "INT",
+                "constraint" => 11,
+            ],
+            "color_id" => [
                 "type" => "INT",
                 "constraint" => 11,
             ],
@@ -32,6 +40,7 @@ class Transactions extends Migration
         $this->forge->addKey("id_transaction", true);
         $this->forge->addForeignKey("user_id", "users", "id_user", "CASCADE", "CASCADE");
         $this->forge->addForeignKey("product_id", "products", "id_product", "CASCADE", "CASCADE");
+        $this->forge->addForeignKey("color_id", "product_colors", "id_product_color", "CASCADE", "CASCADE");
         $this->forge->createTable("transactions");
     }
 
