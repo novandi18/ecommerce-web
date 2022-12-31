@@ -21,6 +21,22 @@ class Transactions extends Migration
                 "type" => "INT",
                 "constraint" => 42,
             ],
+            "city" => [
+                "type" => "VARCHAR",
+                "constraint" => 128,
+            ],
+            "province" => [
+                "type" => "VARCHAR",
+                "constraint" => 128,
+            ],
+            "postcode" => [
+                "type" => "INT",
+                "constraint" => 10,
+            ],
+            "order_notes" => [
+                "type" => "VARCHAR",
+                "constraint" => 256,
+            ],
             "user_id" => [
                 "type" => "INT",
                 "constraint" => 11,

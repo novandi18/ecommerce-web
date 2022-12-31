@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Models\CartModel;
 use App\Models\CategoryModel;
 
 // Create a new instance of our RouteCollection class.
@@ -24,8 +25,11 @@ $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override(function () {
     $categories = new CategoryModel();
+    $carts = new CartModel();
     $data["title"] = "Page Not Found";
     $data["categories"] = $categories->getAll();
+    $data["cart"] = $carts->getTotalItem();
+    $data["results"] = $carts->getCartUser();
     return view("404", $data);
 });
 // The Auto Routing (Legacy) is very dangerous. It is easy to create vulnerable apps
@@ -56,8 +60,9 @@ $routes->post("/register", "UserController::registerProcess");
 
 // --- Profile ---
 $routes->get("/profile", "UserController::profile", ["filter" => "authFilter"]);
+$routes->get("/profile/change_password", "UserController::formChangePassword", ["filter" => "authFilter"]);
 $routes->post("/profile", "UserController::updateProfile", ["filter" => "authFilter"]);
-$routes->post("/profile/changepassword", "UserController::changePassword", ["filter" => "authFilter"]);
+$routes->post("/profile/change_password", "UserController::changePassword", ["filter" => "authFilter"]);
 
 // --- Shop ---
 $routes->get("/shop", "ProductController::shop");
@@ -74,6 +79,15 @@ $routes->post("/cart/checkout", "CartController::cartToCheckout", ["filter" => "
 
 // --- Checkout ---
 $routes->get("/checkout", "TransactionController::checkout", ["filter" => "authFilter"]);
+$routes->post("/checkout", "TransactionController::checkoutProcess", ["filter" => "authFilter"]);
+
+// --- Transaction ---
+$routes->get("/profile/transaction", "UserController::transaction", ["filter" => "authFilter"]);
+$routes->get("/profile/transaction/processed", "UserController::transactionProcessed", ["filter" => "authFilter"]);
+$routes->get("/profile/transaction/shipped", "UserController::transactionShipped", ["filter" => "authFilter"]);
+$routes->get("/profile/transaction/detail/(:num)", "UserController::transactionDetail/$1", ["filter" => "authFilter"]);
+$routes->get("/profile/transaction/buy", "TransactionController::buy", ["filter" => "authFilter"]);
+
 
 /*
  * --------------------------------------------------------------------
