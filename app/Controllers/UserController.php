@@ -5,11 +5,12 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\CartModel;
 use App\Models\CategoryModel;
+use App\Models\TransactionModel;
 use App\Models\UserModel;
 
 class UserController extends BaseController
 {
-    protected $db, $users, $categories, $carts;
+    protected $db, $users, $categories, $carts, $transactions;
 
     public function __construct()
     {
@@ -17,6 +18,7 @@ class UserController extends BaseController
         $this->users = new UserModel();
         $this->categories = new CategoryModel();
         $this->carts = new CartModel();
+        $this->transactions = new TransactionModel();
         helper(["form", "url"]);
     }
 
@@ -195,6 +197,14 @@ class UserController extends BaseController
         return redirect()->to("/profile");
     }
 
+    public function formChangePassword()
+    {
+        $data["title"] = "Change Password";
+        $data["categories"] = $this->categories->getAll();
+        $data["cart"] = $this->carts->getTotalItem();
+        return view("change_password", $data);
+    }
+
     // Change password user
     public function changePassword()
     {
@@ -213,7 +223,7 @@ class UserController extends BaseController
             ]],
         ]);
 
-        if (!$validation) return $this->profile();
+        if (!$validation) return $this->formChangePassword();
 
         $user_exist = $this->users->checkUser("email", session()->email);
         if ($user_exist) {
@@ -225,15 +235,55 @@ class UserController extends BaseController
                     return $this->logout();
                 } else {
                     session()->setFlashdata("error", "Failed to change your password, try again later.");
-                    return redirect()->to("/profile");
+                    return redirect()->to("/profile/change_password");
                 }
             } else {
                 session()->setFlashdata("error", "Current password has not match.");
-                return redirect()->to("/profile");
+                return redirect()->to("/profile/change_password");
             }
         } else {
             session()->setFlashdata("error", "Invalid credentials, please login again.");
             return redirect()->to("/login");
+        }
+    }
+
+    public function transaction()
+    {
+        $data["title"] = "Transaction";
+        $data["categories"] = $this->categories->getAll();
+        $data["cart"] = $this->carts->getTotalItem();
+        $data["transactions"] = $this->transactions->getTransactionWaiting();
+        return view("transaction", $data);
+    }
+
+    public function transactionProcessed()
+    {
+        $data["title"] = "Transaction";
+        $data["categories"] = $this->categories->getAll();
+        $data["cart"] = $this->carts->getTotalItem();
+        $data["transactions"] = $this->transactions->getTransactionProcessed();
+        return view("transaction_processed", $data);
+    }
+
+    public function transactionShipped()
+    {
+        $data["title"] = "Transaction";
+        $data["categories"] = $this->categories->getAll();
+        $data["cart"] = $this->carts->getTotalItem();
+        $data["transactions"] = $this->transactions->getTransactionShipped();
+        return view("transaction_shipped", $data);
+    }
+
+    public function transactionDetail($id)
+    {
+        if (@$id) {
+            $data["title"] = "Transaction";
+            $data["categories"] = $this->categories->getAll();
+            $data["cart"] = $this->carts->getTotalItem();
+            $data["transactions"] = $this->transactions->getTransactionDetail($id);
+            return view("transaction_detail", $data);
+        } else {
+            return redirect()->to("/profile/transaction");
         }
     }
 }

@@ -2159,10 +2159,8 @@ ol {
   color: #1c1c1c;
   font-weight: 700;
   margin-bottom: 10px;
-}
-
-.checkout__order .checkout__order__products span {
-  float: right;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 }
 
 .checkout__order ul {
@@ -2174,26 +2172,40 @@ ol {
   color: #6f6f6f;
   line-height: 40px;
   list-style: none;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 }
 
-.checkout__order ul li span {
+.checkout__order ul li div:last-child {
   font-weight: 700;
-  float: right;
+  text-align: right;
 }
 
 .checkout__order .checkout__order__subtotal {
-  font-size: 18px;
+  font-size: 15px;
   color: #1c1c1c;
-  font-weight: 700;
   border-bottom: 1px solid #e1e1e1;
   border-top: 1px solid #e1e1e1;
   padding-bottom: 15px;
   margin-bottom: 15px;
   padding-top: 15px;
+  display: grid;
+  grid-template-rows: 1fr;
+  gap: 5px;
 }
 
-.checkout__order .checkout__order__subtotal span {
-  float: right;
+.checkout__order .checkout__order__subtotal div {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+.checkout__order .checkout__order__subtotal div span:last-child {
+  text-align: right;
+}
+
+.checkout__order .checkout__order__subtotal div:first-child {
+  font-weight: 700;
+  font-size: 18px;
 }
 
 .checkout__order .checkout__input__checkbox label {

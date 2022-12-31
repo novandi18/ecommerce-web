@@ -74,7 +74,7 @@ class CartModel extends Model
 
     public function getCartUser()
     {
-        $q = $this->db->query("SELECT crt.id_cart as id, p.product_name as product_name, p.price as price, p.photo as photo, c.category_name as category_name, crt.quantity as quantity, crt.size as size, pc.color as color FROM carts crt JOIN products p ON p.id_product = crt.product_id JOIN categories c ON c.id_category = p.category_id JOIN product_colors pc ON pc.id_product_color = crt.color_id WHERE crt.user_id = '" . session()->id . "'")->getResult();
+        $q = $this->db->query("SELECT crt.id_cart as id, p.product_name as product_name, crt.product_id as product_id, p.price as price, p.photo as photo, c.category_name as category_name, crt.quantity as quantity, crt.size as size, pc.color as color, crt.color_id as color_id FROM carts crt JOIN products p ON p.id_product = crt.product_id JOIN categories c ON c.id_category = p.category_id JOIN product_colors pc ON pc.id_product_color = crt.color_id WHERE crt.user_id = '" . session()->id . "'")->getResult();
         return $q;
     }
 
