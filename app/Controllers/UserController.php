@@ -140,6 +140,7 @@ class UserController extends BaseController
         $data["categories"] = $this->categories->getAll();
         $data["profile"] = $this->users->getUserProfile();
         $data["cart"] = $this->carts->getTotalItem();
+        $data["address"] = $this->users->getUserAddress();
         return view("profile", $data);
     }
 
@@ -154,14 +155,6 @@ class UserController extends BaseController
             "email" => ["label" => "Email", "rules" => "required|valid_email", "errors" => [
                 "required" => "Enter your email.",
                 "valid_email" => "Please enter a valid email address.",
-            ]],
-            "phone_number" => ["label" => "Phone Number", "rules" => "required|numeric", "errors" => [
-                "required" => "Enter your mobile number.",
-                "numeric" => "Phone number must be a number."
-            ]],
-            "address" => ["label" => "Address", "rules" => "required|min_length[5]", "errors" => [
-                "required" => "Enter your address.",
-                "min_length" => "Address must be atleast 5 characters long."
             ]]
         ]);
 
@@ -170,8 +163,6 @@ class UserController extends BaseController
         $data = [
             "user_name" => $this->request->getVar("user_name"),
             "email" => $this->request->getVar("email"),
-            "phone_number" => $this->request->getVar("phone_number"),
-            "address" => $this->request->getVar("address"),
         ];
 
         if ($data["email"] !== session()->email) {
@@ -180,12 +171,6 @@ class UserController extends BaseController
                 session()->setFlashdata("error", "The email is already in use by another user.");
                 return redirect()->to("/profile");
             }
-        }
-
-        $check_phone_number = $this->users->checkUserWithoutSession("phone_number", $data["phone_number"]);
-        if ($check_phone_number) {
-            session()->setFlashdata("error", "The phone number is already in use by another user.");
-            return redirect()->to("/profile");
         }
 
         $update = $this->users->update(session()->id, $data);
@@ -249,10 +234,27 @@ class UserController extends BaseController
 
     public function transaction()
     {
+        \Midtrans\Config::$serverKey = 'SB-Mid-server-QF29mMsRPIg7o3FWyiRzRByI';
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
         $data["title"] = "Transaction";
         $data["categories"] = $this->categories->getAll();
         $data["cart"] = $this->carts->getTotalItem();
-        $data["transactions"] = $this->transactions->getTransactionWaiting();
+        $transactions = $this->transactions->getTransactionWaiting();
+        $data["transactions"] = $transactions;
+
+        foreach ($transactions as $transaction) :
+            if ($transaction->order_id !== NULL) :
+                $status = \Midtrans\Transaction::status($transaction->order_id);
+                if ($status->transaction_status === "settlement") :
+                    $d = ["order_id" => NULL, "snap_token" => NULL, "payment_deadline" => NULL, "status" => "3"];
+                    $this->db->table("transactions")->where("id_transaction", $transaction->id_transaction)->update($d);
+                endif;
+            endif;
+        endforeach;
+
         return view("transaction", $data);
     }
 
@@ -263,6 +265,15 @@ class UserController extends BaseController
         $data["cart"] = $this->carts->getTotalItem();
         $data["transactions"] = $this->transactions->getTransactionProcessed();
         return view("transaction_processed", $data);
+    }
+
+    public function transactionCanceled()
+    {
+        $data["title"] = "Transaction";
+        $data["categories"] = $this->categories->getAll();
+        $data["cart"] = $this->carts->getTotalItem();
+        $data["transactions"] = $this->transactions->getTransactionCanceled();
+        return view("transaction_canceled", $data);
     }
 
     public function transactionShipped()
@@ -285,5 +296,109 @@ class UserController extends BaseController
         } else {
             return redirect()->to("/profile/transaction");
         }
+    }
+
+    public function addAddress()
+    {
+        $validation = $this->validate([
+            "title" => ["label" => "Name", "rules" => "required", "errors" => [
+                "required" => "Please enter your title of address."
+            ]],
+            "address" => ["label" => "Address", "rules" => "required", "errors" => [
+                "required" => "Please enter your address."
+            ]],
+            "city" => ["label" => "City", "rules" => "required", "errors" => [
+                "required" => "Please enter your city."
+            ]],
+            "province" => ["label" => "Province", "rules" => "required", "errors" => [
+                "required" => "Please enter your province."
+            ]],
+            "postcode" => ["label" => "Postcode", "rules" => "required|numeric", "errors" => [
+                "required" => "Please enter your postcode.",
+                "numeric" => "Postcode must be a number.",
+            ]],
+            "phone_number" => ["label" => "Phone Number", "rules" => "required|numeric", "errors" => [
+                "required" => "Please enter your phone number.",
+                "numeric" => "Phone number must be a number."
+            ]],
+        ]);
+
+        if (!$validation) return $this->profile();
+
+        $data = [
+            "title" => $this->request->getVar("title"),
+            "address" => $this->request->getVar("address"),
+            "city" => $this->request->getVar("city"),
+            "province" => $this->request->getVar("province"),
+            "postcode" => $this->request->getVar("postcode"),
+            "phone_number" => $this->request->getVar("phone_number"),
+            "user_id" => session()->id
+        ];
+
+        $this->users->addUserAddress($data);
+        session()->setFlashdata("success", "Address has been added.");
+        return redirect()->to("/profile");
+    }
+
+    public function updateAddress($id)
+    {
+        $data["title"] = "Edit Address";
+        $data["categories"] = $this->categories->getAll();
+        $data["profile"] = $this->users->getUserProfile();
+        $data["cart"] = $this->carts->getTotalItem();
+        $data["address"] = $this->users->getUserAddressById($id);
+        return view("address_edit", $data);
+    }
+
+    public function deleteAddress($id)
+    {
+        if ($id) {
+            $this->users->removeUserAddress($id);
+            session()->setFlashdata("success", "Address has been removed.");
+            return redirect()->to("/profile");
+        } else {
+            return redirect()->to("/profile");
+        }
+    }
+
+    public function updateAddressProcess()
+    {
+        $validation = $this->validate([
+            "title" => ["label" => "Name", "rules" => "required", "errors" => [
+                "required" => "Please enter your title of address."
+            ]],
+            "address" => ["label" => "Address", "rules" => "required", "errors" => [
+                "required" => "Please enter your address."
+            ]],
+            "city" => ["label" => "City", "rules" => "required", "errors" => [
+                "required" => "Please enter your city."
+            ]],
+            "province" => ["label" => "Province", "rules" => "required", "errors" => [
+                "required" => "Please enter your province."
+            ]],
+            "postcode" => ["label" => "Postcode", "rules" => "required|numeric", "errors" => [
+                "required" => "Please enter your postcode.",
+                "numeric" => "Postcode must be a number.",
+            ]],
+            "phone_number" => ["label" => "Phone Number", "rules" => "required|numeric", "errors" => [
+                "required" => "Please enter your phone number.",
+                "numeric" => "Phone number must be a number."
+            ]],
+        ]);
+
+        if (!$validation) return $this->updateAddress($this->request->getVar("id_address"));
+
+        $data = [
+            "title" => $this->request->getVar("title"),
+            "address" => $this->request->getVar("address"),
+            "city" => $this->request->getVar("city"),
+            "province" => $this->request->getVar("province"),
+            "postcode" => $this->request->getVar("postcode"),
+            "phone_number" => $this->request->getVar("phone_number")
+        ];
+
+        $this->users->updateAddress($this->request->getVar("id_address"), $data);
+        session()->setFlashdata("success", "Address has been updated.");
+        return redirect()->to("/profile");
     }
 }

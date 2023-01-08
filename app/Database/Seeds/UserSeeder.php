@@ -18,8 +18,6 @@ class UserSeeder extends Seeder
                 "user_name"     => $faker->name(),
                 "email"         => $faker->email(),
                 "password"      => password_hash("user123", PASSWORD_DEFAULT),
-                "phone_number"  => $faker->phoneNumber(),
-                "address"       => $faker->address(),
                 "created_at"    => Time::createFromTimestamp($faker->unixTime()),
                 "updated_at"    => Time::now()
             ]);

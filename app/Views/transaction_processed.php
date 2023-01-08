@@ -19,17 +19,18 @@
 
 <section class="bg-light py-2" style="border-bottom: 1px solid #ddd;">
   <nav class="nav container">
-    <a class="nav-link <?= $_SERVER["REQUEST_URI"] === '/profile' ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile">Profile</a>
-    <a class="nav-link <?= strpos($_SERVER["REQUEST_URI"], '/profile/transaction') !== false ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/transaction">Transaction</a>
-    <a class="nav-link <?= strpos($_SERVER["REQUEST_URI"], '/profile/change_password') !== false ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/change_password">Change Password</a>
+    <a class="nav-link" style="color: black;" href="/profile">Profile</a>
+    <a class="nav-link font-weight-bold" style="color: black;" href="/profile/transaction">Transaction</a>
+    <a class="nav-link" style="color: black;" href="/profile/change_password">Change Password</a>
   </nav>
 </section>
 
 <section class="bg-light py-2 my-4 container d-flex justify-content-center" style="border: 1px solid #ddd; border-radius: 25px">
   <nav class="nav">
-    <a class="nav-link <?= $_SERVER["REQUEST_URI"] == '/profile/transaction' ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/transaction">Waiting for Payment</a>
-    <a class="nav-link <?= $_SERVER["REQUEST_URI"] == '/profile/transaction/processed' ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/transaction/processed">Processed</a>
-    <a class="nav-link <?= $_SERVER["REQUEST_URI"] == '/profile/transaction/shipped' ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/transaction/shipped">Shipped</a>
+    <a class="nav-link" style="color: black;" href="/profile/transaction/canceled">Canceled</a>
+    <a class="nav-link" style="color: black;" href="/profile/transaction">Waiting for Payment</a>
+    <a class="nav-link font-weight-bold" style="color: black;" href="/profile/transaction/processed">Processed</a>
+    <a class="nav-link" style="color: black;" href="/profile/transaction/shipped">Shipped</a>
   </nav>
 </section>
 
@@ -44,12 +45,12 @@
             <th scope="col">Total</th>
             <th scope="col">Order</th>
             <th scope="col">Status</th>
-            <th scope="col"></th>
-            <th scope="col">Details</th>
+            <th scope="col" colspan="2">Details</th>
           </tr>
         </thead>
         <tbody>
           <?php $i = 0;
+          $row = 1;
           foreach ($transactions as $transaction) : ?>
             <?php if ($i === 0 || (date("d F Y", strtotime($transactions[$i - 1]->order)) !== date("d F Y", strtotime($transaction->order)))) : ?>
               <tr>
@@ -60,12 +61,24 @@
               <td><?= $transaction->product_name ?></td>
               <td><?= $transaction->quantity ?></td>
               <td><?= "Rp " . number_format($transaction->total, 0, "", ",") ?></td>
-              <td><?= date("d F Y", strtotime($transaction->order)) ?></td>
-              <td><span class="badge badge-warning">processed</span></td>
-              <td><a href="/" class="btn btn-danger" style="font-size: .8em;">BUY NOW</a></td>
-              <td><a href="/profile/transaction/detail/<?= $transaction->id_transaction ?>" class="btn btn-primary" style="font-size: .8em;">VIEW</a></td>
+              <td><?= date("H:i:s", strtotime($transaction->order)) ?></td>
+              <td><span class="badge badge-info">processed</span></td>
+              <td class="border-right"><a href="/profile/transaction/detail/<?= $transaction->id_transaction ?>" class="btn btn-primary" style="font-size: .8em;">VIEW</a></td>
+              <?php if ($i === 0 || ($transactions[$i - 1]->order !== $transaction->order)) : ?>
+                <td>
+                  <form action="<?= base_url('/profile/transaction/arrived') ?>" method="POST">
+                    <?php foreach ($transactions as $t) : ?>
+                      <?php if ($t->order == $transaction->order) : ?>
+                        <input type="text" name="transaction[]" value="<?= $t->id_transaction . '-' . $t->id_product . '-' . $t->quantity . '-' . $t->color_id . '-' . $t->size ?>" hidden>
+                      <?php endif ?>
+                    <?php endforeach ?>
+                    <button class="btn btn-danger w-100" style="font-size: .8em;">ARRIVED</button>
+                  </form>
+                </td>
+              <?php endif ?>
             </tr>
           <?php $i++;
+            $row++;
           endforeach; ?>
         </tbody>
       </table>

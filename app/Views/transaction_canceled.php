@@ -27,17 +27,17 @@
 
 <section class="bg-light py-2 my-4 container d-flex justify-content-center" style="border: 1px solid #ddd; border-radius: 25px">
   <nav class="nav">
-    <a class="nav-link" style="color: black;" href="/profile/transaction/canceled">Canceled</a>
+    <a class="nav-link font-weight-bold" style="color: black;" href="/profile/transaction/canceled">Canceled</a>
     <a class="nav-link" style="color: black;" href="/profile/transaction">Waiting for Payment</a>
     <a class="nav-link" style="color: black;" href="/profile/transaction/processed">Processed</a>
-    <a class="nav-link font-weight-bold" style="color: black;" href="/profile/transaction/shipped">Shipped</a>
+    <a class="nav-link" style="color: black;" href="/profile/transaction/shipped">Shipped</a>
   </nav>
 </section>
 
 <section class="container mb-4">
   <div class="mb-4 mt-4">
     <?php if (count($transactions) > 0) : ?>
-      <table class="table table-hover mb-5">
+      <table class="table mb-5">
         <thead>
           <tr>
             <th scope="col">Product</th>
@@ -46,6 +46,7 @@
             <th scope="col">Order</th>
             <th scope="col">Status</th>
             <th scope="col">Details</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -61,8 +62,8 @@
               <td><?= $transaction->product_name ?></td>
               <td><?= $transaction->quantity ?></td>
               <td><?= "Rp " . number_format($transaction->total, 0, "", ",") ?></td>
-              <td><?= date("H:i:s", strtotime($transaction->order)) ?></td>
-              <td><span class="badge badge-success">shipped</span></td>
+              <td><?= date("d F Y", strtotime($transaction->order)) ?></td>
+              <td><span class="badge badge-danger">canceled</span></td>
               <td><a href="/profile/transaction/detail/<?= $transaction->id_transaction ?>" class="btn btn-primary" style="font-size: .8em;">VIEW</a></td>
             </tr>
           <?php $i++;

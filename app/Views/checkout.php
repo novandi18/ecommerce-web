@@ -23,44 +23,28 @@
       <h4>Billing Details</h4>
       <form action="<?= base_url('/checkout') ?>" method="POST">
         <div class="row">
-          <div class="col-lg-8 col-md-6">
+          <div class="col-lg-8 col-md-6 d-flex" style="flex-direction: column;">
             <div class="checkout__input">
               <p>Full Name<span>*</span></p>
               <input type="text" value="<?= $user->user_name ?>" name="name" disabled required>
               <span class="text-secondary" style="font-size: .8em;">Change this field on your profile.</span>
             </div>
             <div class="checkout__input">
-              <p>Address<span>*</span></p>
-              <input type="text" placeholder="Street Address" value="<?= $user->address ?>" name="address" disabled required>
+              <p>Email<span>*</span></p>
+              <input type="text" value="<?= $user->email ?>" name="email" disabled required>
               <span class="text-secondary" style="font-size: .8em;">Change this field on your profile.</span>
             </div>
             <div class="checkout__input">
-              <p>Regency / City<span>*</span></p>
-              <input type="text" name="city" required>
-            </div>
-            <div class="checkout__input">
-              <p>Province<span>*</span></p>
-              <input type="text" name="province" required>
-            </div>
-            <div class="checkout__input">
-              <p>Postcode / ZIP<span>*</span></p>
-              <input type="text" name="postcode" required>
-            </div>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="checkout__input">
-                  <p>Phone<span>*</span></p>
-                  <input type="text" value="<?= $user->phone_number ?>" name="phone" disabled required>
-                  <span class="text-secondary" style="font-size: .8em;">Change this field on your profile.</span>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="checkout__input">
-                  <p>Email<span>*</span></p>
-                  <input type="text" value="<?= $user->email ?>" name="email" disabled required>
-                  <span class="text-secondary" style="font-size: .8em;">Change this field on your profile.</span>
-                </div>
-              </div>
+              <p>Address<span>*</span></p>
+              <?php if (count($address) > 0) : ?>
+                <select name="address" class="w-100">
+                  <?php foreach ($address as $a) : ?>
+                    <option value="<?= $a->id_address ?>"><?= $a->title ?> &#8226; <?= $a->address ?> &#8226; <?= $a->phone_number ?></option>
+                  <?php endforeach ?>
+                </select>
+              <?php else : ?>
+                <span class="text-secondary">No address found, please <a href="/profile">add a new address</a>.</span>
+              <?php endif ?>
             </div>
             <div class="checkout__input">
               <p>Order notes</p>
@@ -98,7 +82,7 @@
               </div>
               <div class="checkout__order__total">Total <span><?= "Rp " . number_format($cart["total"] + 1000, 0, "", ",") ?></span></div>
               <input type="text" name="total" value="<?= $cart["total"] + 1000 ?>" hidden>
-              <button type="submit" class="site-btn">PLACE ORDER</button>
+              <button type="submit" class="site-btn" <?= count($address) > 0 ? '' : 'disabled' ?>>PLACE ORDER</button>
             </div>
           </div>
         </div>

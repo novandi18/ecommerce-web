@@ -19,15 +19,15 @@
 
 <section class="bg-light py-2" style="border-bottom: 1px solid #ddd;">
   <nav class="nav container">
-    <a class="nav-link <?= $_SERVER["REQUEST_URI"] === '/profile' ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile">Profile</a>
-    <a class="nav-link <?= strpos($_SERVER["REQUEST_URI"], '/profile/transaction') !== false ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/transaction">Transaction</a>
-    <a class="nav-link <?= strpos($_SERVER["REQUEST_URI"], '/profile/change_password') !== false ? 'font-weight-bold' : '' ?>" style="color: black;" href="/profile/change_password">Change Password</a>
+    <a class="nav-link" style="color: black;" href="/profile">Profile</a>
+    <a class="nav-link font-weight-bold" style="color: black;" href="/profile/transaction">Transaction</a>
+    <a class="nav-link" style="color: black;" href="/profile/change_password">Change Password</a>
   </nav>
 </section>
 
 <section class="container mb-4">
   <div class="mb-4 mt-4 py-4">
-    <a href="/profile/transaction<?= $transactions[0]->status == '1' ? '' : ($transactions[0]->status != '2' ? '/processed' : '/shipped') ?>" class="mb-4 btn btn-light" style="display: inline-block; color: black">
+    <a href="/profile/transaction<?= $transactions[0]->status == '1' || $transactions[0]->status == '2' ? '' : ($transactions[0]->status == '3' ? '/processed' : ($transactions[0]->status == '4' ? '/shipped' : '/canceled')) ?>" class="mb-4 btn btn-light" style="display: inline-block; color: black">
       <i class="fa fa-arrow-left mr-2"></i>
       Back
     </a>
@@ -50,7 +50,7 @@
             <span>: <strong><?= $transactions[0]->color ?></strong></span>
             <span>: <strong><?= $transactions[0]->size ?></strong></span>
             <span>: <strong><?= $transactions[0]->quantity ?></strong></span>
-            <span>: <span class="badge badge-warning"><?= $transactions[0]->status == '1' ? 'waiting for payment' : ($transactions[0]->status == '2' ? 'pending payment' : 'processed') ?></span></span>
+            <span>: <span class="badge badge-<?= $transactions[0]->status == '1' ? 'warning' : ($transactions[0]->status == '2' ? 'secondary' : ($transactions[0]->status == '3' ? 'info' : ($transactions[0]->status == '4' ? 'success' : 'danger'))) ?>"><?= $transactions[0]->status == '1' ? 'waiting' : ($transactions[0]->status == '2' ? 'pending' : ($transactions[0]->status == '3' ? 'processed' : ($transactions[0]->status == '4' ? 'shipped' : 'canceled'))) ?></span></span>
           </div>
         </div>
       </div>

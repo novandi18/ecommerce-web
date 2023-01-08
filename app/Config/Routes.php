@@ -61,6 +61,10 @@ $routes->post("/register", "UserController::registerProcess");
 // --- Profile ---
 $routes->get("/profile", "UserController::profile", ["filter" => "authFilter"]);
 $routes->get("/profile/change_password", "UserController::formChangePassword", ["filter" => "authFilter"]);
+$routes->get("/profile/address/(:num)/edit", "UserController::updateAddress/$1", ["filter" => "authFilter"]);
+$routes->get("/profile/address/(:num)/delete", "UserController::deleteAddress/$1", ["filter" => "authFilter"]);
+$routes->post("/profile/address/new", "UserController::addAddress", ["filter" => "authFilter"]);
+$routes->post("/profile/address/edit", "UserController::updateAddressProcess", ["filter" => "authFilter"]);
 $routes->post("/profile", "UserController::updateProfile", ["filter" => "authFilter"]);
 $routes->post("/profile/change_password", "UserController::changePassword", ["filter" => "authFilter"]);
 
@@ -83,10 +87,14 @@ $routes->post("/checkout", "TransactionController::checkoutProcess", ["filter" =
 
 // --- Transaction ---
 $routes->get("/profile/transaction", "UserController::transaction", ["filter" => "authFilter"]);
+$routes->get("/profile/transaction/canceled", "UserController::transactionCanceled", ["filter" => "authFilter"]);
 $routes->get("/profile/transaction/processed", "UserController::transactionProcessed", ["filter" => "authFilter"]);
 $routes->get("/profile/transaction/shipped", "UserController::transactionShipped", ["filter" => "authFilter"]);
 $routes->get("/profile/transaction/detail/(:num)", "UserController::transactionDetail/$1", ["filter" => "authFilter"]);
-$routes->get("/profile/transaction/buy", "TransactionController::buy", ["filter" => "authFilter"]);
+$routes->post("/profile/transaction/buy", "TransactionController::buy", ["filter" => "authFilter"]);
+$routes->post("/profile/transaction/continuepay", "TransactionController::continuePay", ["filter" => "authFilter"]);
+$routes->post("/profile/transaction/arrived", "TransactionController::arrived", ["filter" => "authFilter"]);
+$routes->post("/profile/transaction/cancel", "TransactionController::cancelOrder", ["filter" => "authFilter"]);
 
 
 /*
