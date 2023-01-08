@@ -21,21 +21,17 @@ class Transactions extends Migration
                 "type" => "INT",
                 "constraint" => 42,
             ],
-            "city" => [
-                "type" => "VARCHAR",
-                "constraint" => 128,
-            ],
-            "province" => [
-                "type" => "VARCHAR",
-                "constraint" => 128,
-            ],
-            "postcode" => [
-                "type" => "INT",
-                "constraint" => 10,
-            ],
             "order_notes" => [
                 "type" => "VARCHAR",
                 "constraint" => 256,
+            ],
+            "status" => [
+                "type" => "VARCHAR",
+                "constraint" => 5,
+            ],
+            "address_id" => [
+                "type" => "INT",
+                "constraint" => 11,
             ],
             "user_id" => [
                 "type" => "INT",
@@ -54,6 +50,7 @@ class Transactions extends Migration
         ]);
 
         $this->forge->addKey("id_transaction", true);
+        $this->forge->addForeignKey("address_id", "address_users", "id_address", "CASCADE", "CASCADE");
         $this->forge->addForeignKey("user_id", "users", "id_user", "CASCADE", "CASCADE");
         $this->forge->addForeignKey("product_id", "products", "id_product", "CASCADE", "CASCADE");
         $this->forge->addForeignKey("color_id", "product_colors", "id_product_color", "CASCADE", "CASCADE");

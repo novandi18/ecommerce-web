@@ -25,13 +25,6 @@ class Users extends Migration
                 "type" => "VARCHAR",
                 "constraint" => 256
             ],
-            "phone_number" => [
-                "type" => "VARCHAR",
-                "constraint" => 13
-            ],
-            "address" => [
-                "type" => "TEXT"
-            ],
             "created_at datetime default current_timestamp",
             "updated_at datetime default current_timestamp on update current_timestamp"
         ]);
